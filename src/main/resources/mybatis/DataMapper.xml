@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hunau.datacquisition.mapper.DataMapper">
+
+    <resultMap id="DataResultMap" type="Data">
+        <id property="dataId"       column="data_id"/>
+        <result property="temp"     column="temperature"/>
+        <result property="humi"     column="humidity"/>
+        <result property="IP"       column="IP" />
+        <result property="collTime" column="coll_time" />
+    </resultMap>
+
+    <select id="selectDataList" resultMap="DataResultMap" >
+        select
+            data_id,
+            temperature,
+            humidity,
+            IP,
+            coll_time
+        from data
+        order by coll_time desc
+        limit #{start}, #{pageSize}
+    </select>
+
+    <select id="getDataCount" resultMap="DataResultMap" >
+        select
+            data_id
+        from data
+    </select>
+
+    <insert id="collData" parameterType="Data" >
+        insert into data(
+        <if test="temp != null and temp != '' ">temperature,</if>
+        <if test="humi != null and humi != '' ">humidity,</if>
+        <if test="IP != null and IP != '' ">IP,</if>
+        coll_time
+        )
+
+        value (
+        <if test="temp != null and temp != '' ">#{temp},</if>
+        <if test="humi != null and humi != '' ">#{humi},</if>
+        <if test="IP != null and IP != '' ">#{IP},</if>
+        sysdate()
+        )
+    </insert>
+
+</mapper>
